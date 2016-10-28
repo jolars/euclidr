@@ -55,7 +55,9 @@ two_disk_overlap <- function(r1, r2, d = NULL, x1 = NULL, x2 = NULL, y1 = NULL,
   }
 }
 
-# Find intersection points
+#' Find intersection points of circles
+#'
+#'
 locate_intersections <- function(r1, r2, x_d, y_d, x_c, y_c, d) {
   l  <- (r2 ^ 2L - r1 ^ 2L + d ^ 2L) / (2L * d)
   h  <- sqrt(r2 ^ 2L - l ^ 2L)
