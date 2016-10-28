@@ -3,9 +3,11 @@ Title: Geometry Utilities
 Version: 0.0.0.9000
 Authors@R: person("Johan", "Larsson", email = "johanlarsson@outlook.com",
                   role = c("aut", "cre"))
-Description: Fast functions and utilities for geometry.
+Description: euclidr is a collection of various formulas, algorithms, and
+    equations related to geometry in one way or another. When possible,
+    functions are designed for speed using vectorized operations.
 Depends:
-    R (>= 3.1.0)
+    R (>= 3.3.1)
 Imports:
     assertthat
 Suggests:
