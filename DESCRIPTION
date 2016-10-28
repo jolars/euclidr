@@ -1,0 +1,18 @@
+Package: euclidr
+Title: Geometry Utilities
+Version: 0.0.0.9000
+Authors@R: person("Johan", "Larsson", email = "johanlarsson@outlook.com",
+                  role = c("aut", "cre"))
+Description: Fast functions and utilities for geometry.
+Depends:
+    R (>= 3.1.0)
+Imports:
+    assertthat
+Suggests:
+    covr,
+    testthat
+RoxygenNote: 5.0.1
+URL: https://github.com/jolars/euclidr
+BugReports: https://github.com/jolars/euclidr/issues
+License: MIT + file LICENSE
+LazyData: true
