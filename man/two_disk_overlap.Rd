@@ -5,7 +5,7 @@
 \title{Overlap of two disks}
 \usage{
 two_disk_overlap(r1, r2, d = NULL, x1 = NULL, x2 = NULL, y1 = NULL,
-  y2 = NULL)
+  y2 = NULL, warnings = TRUE)
 }
 \arguments{
 \item{r1}{Radius of the first disk}
@@ -21,6 +21,9 @@ two_disk_overlap(r1, r2, d = NULL, x1 = NULL, x2 = NULL, y1 = NULL,
 \item{y1}{y coordinate for the first disk's center}
 
 \item{y2}{y coordinate for the second disk's center}
+
+\item{warnings}{Returns warnings if disks are separated ore one is contained
+within the otherr. Set to FALSE to disable.}
 }
 \value{
 The area of the overlap between the two disks.
@@ -28,7 +31,7 @@ The area of the overlap between the two disks.
 \description{
 Compute the overlap of two disks given the euclidean distance between their
 centers. If no distance is given the distance will be computed by the
-function.
+function provided that the coordinates for the center are provided.
 }
 \examples{
 
