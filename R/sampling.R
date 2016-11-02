@@ -7,26 +7,26 @@
 #' back into the mother set and tries to see if there is a better candidate than
 #' the point that was put back.
 #'
-#' @param dat A matrix of points to choose n from
+#' @param data A matrix of points to choose n from
 #' @param n The number of points to select
 #' @return A vector of indices for the points in the subset
 #' @seealso \code{\link[stats]{dist}}
 #' @examples
 #' xy <- matrix(runif(200), ncol = 2)
-#' id <- farthest_points(dat = xy, n = 5)
-#' xyt[id, ]
+#' id <- farthest_points(data = xy, n = 5)
+#' xy[id, ]
 #'
 #' plot(xy)
 #' points(xy[id, ], pch = 16)
 #'
 #' @export
-#' @importFrom assertthat assert_that
+#' @import assertthat
 farthest_points <- function(data, n) {
   assert_that(is.numeric(data))
-  assert_that(nrow(data) >= length(n))
+  assert_that(nrow(data) >= n)
   assert_that(is.numeric(n))
-  assert_that(length(n) > 1)
-  assert_that(n %% 1 == 0) # check that it is an integer
+  assert_that(n > 0)
+  assert_that(n %% 1 == 0) # check that n is an integer
 
   dmat <- as.matrix(stats::dist(data))
   r <- sample.int(nrow(dmat), n)
@@ -37,6 +37,6 @@ farthest_points <- function(data, n) {
       k <- which.max(mm[(1:ncol(mm) - 1) * nrow(mm) + max.col(t(-mm))])
       r[i] <- as.numeric(dimnames(mm)[[2]][k])
     }
-    if (identical(r_old, r)) break #return(r)
+    if (identical(r_old, r)) return(r)
   }
 }
