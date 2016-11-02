@@ -7,9 +7,9 @@
 farthest_points(data, n)
 }
 \arguments{
-\item{n}{The number of points to select}
+\item{data}{A matrix of points to choose n from}
 
-\item{dat}{A matrix of points to choose n from}
+\item{n}{The number of points to select}
 }
 \value{
 A vector of indices for the points in the subset
@@ -25,8 +25,8 @@ the point that was put back.
 }
 \examples{
 xy <- matrix(runif(200), ncol = 2)
-id <- farthest_points(dat = xy, n = 5)
-xyt[id, ]
+id <- farthest_points(data = xy, n = 5)
+xy[id, ]
 
 plot(xy)
 points(xy[id, ], pch = 16)
