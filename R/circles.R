@@ -21,53 +21,98 @@
 
 two_disk_overlap <- function(r1, r2, d = NULL, x1 = NULL, x2 = NULL, y1 = NULL,
                              y2 = NULL, warnings = TRUE) {
-  assert_that(is.numeric(r1))
-  assert_that(is.numeric(r2))
-  assert_that(r1 > 0)
-  assert_that(r2 > 0)
+  assert_that(all(is.numeric(r1)))
+  assert_that(all(is.numeric(r2)))
+  assert_that(all(r1 > 0))
+  assert_that(all(r2 > 0))
 
   if(is.null(d)) {
-    assert_that(!is.null(x1))
-    assert_that(!is.null(x2))
-    assert_that(!is.null(y1))
-    assert_that(!is.null(y2))
-    assert_that(is.numeric(x1))
-    assert_that(is.numeric(x2))
-    assert_that(is.numeric(y1))
-    assert_that(is.numeric(y2))
+    assert_that(all(!is.null(x1)))
+    assert_that(all(!is.null(x2)))
+    assert_that(all(!is.null(y1)))
+    assert_that(all(!is.null(y2)))
+    assert_that(all(is.numeric(x1)))
+    assert_that(all(is.numeric(x2)))
+    assert_that(all(is.numeric(y1)))
+    assert_that(all(is.numeric(y2)))
 
     d <- sqrt((x1 - x2) ^ 2 + (y1 - y2) ^ 2)
   } else {
-    assert_that(is.numeric(d))
-    assert_that(d >= 0)
+    assert_that(all(is.numeric(d)))
+    assert_that(all(d >= 0))
   }
 
-  if (d + min(r1, r2) < max(r1, r2)) {
-    if (warnings) warning("One disk is a subset of the other. The smallest disks's area is returned.")
-    pi * min(r1, r2) ^ 2
-  } else if (d > r1 + r2) {
-    if (warnings) warning("The disks to not intersect.")
-    0
-  } else {
+  i1 <- d + pmin.int(r1, r2) < pmax.int(r1, r2)
+  i2 <- d > r1 + r2
+  out <- double(length(d))
+
+  out[i1] <- pi * pmin.int(r1[i1], r2[i1]) ^ 2
+  out[i2] <- 0
+  out[!(i1 | i2)] <-
     r1 ^ 2L * acos((d ^ 2L + r1 ^ 2L - r2 ^ 2L) / (2L * d * r1)) +
       r2 ^ 2L * acos((d ^ 2L + r2 ^ 2L - r1 ^ 2L) / (2L * d * r2)) -
       sqrt((r1 + r2 - d) * (d + r1 - r2) * (d - r1 + r2) * (d + r1 + r2)) / 2L
-  }
 }
 
 #' Find intersection points of circles
 #'
+#' Intersects any number of circles to find the points at which they intersect.
 #'
-locate_intersections <- function(r1, r2, x_d, y_d, x_c, y_c, d) {
+#' @param x x coordinates of the circle centers
+#' @param y y coordinates of the circle centers
+#' @param r Radiuses of the circles
+#' @param nan.rm Whether to drop
+#' @return Return a matrix of x and y coordinates as well as the indices of the
+#'     circles.
+#' @examples
+#' r <- runif(5, 0.3, 0.8)
+#' x <- runif(5)
+#' y <- runif(5)
+#'
+#' int <- intersect_circles(x, y, r)
+#' int
+#'
+#' euclidr::draw_circles(x, y, r)
+#' points(int[, 1], int[, 2], pch = 16)
+#'
+#' @export
+#' @import assertthat
+intersect_circles <- function(x, y, r, nan.rm = FALSE) {
+  assert_that(all(is.numeric(x)))
+  assert_that(all(is.numeric(y)))
+  assert_that(all(is.numeric(r)))
+  assert_that(all(r >= 0))
+  assert_that(is.logical(nan.rm))
+
+  i <- utils::combn(length(x), 2, FUN = function(x) x)
+  a <- i[1, ]
+  b <- i[2, ]
+
+  x_d <- x[a] - x[b]
+  y_d <- y[a] - y[b]
+  x_c <- matrix(x[i], 2)
+  y_c <- matrix(y[i], 2)
+  r1  <- r[a]
+  r2  <- r[b]
+  d   <- sqrt(x_d ^ 2 + y_d ^ 2)
+
   l  <- (r2 ^ 2L - r1 ^ 2L + d ^ 2L) / (2L * d)
   h  <- sqrt(r2 ^ 2L - l ^ 2L)
-  ld <- l / d
-  hd <- h / d
-  x1 <- x_d * ld + y_d * hd + x_c
-  x2 <- x_d * ld - y_d * hd + x_c
-  y1 <- y_d * ld - x_d * hd + y_c
-  y2 <- y_d * ld + x_d * hd + y_c
-  cbind(c(x1, x2), c(y1, y2))
+
+  x1 <- x_d * l / d + y_d * h / d + x[b]
+  x2 <- x_d * l / d - y_d * h / d + x[b]
+  y1 <- y_d * l / d - x_d * h / d + y[b]
+  y2 <- y_d * l / d + x_d * h / d + y[b]
+
+  out <- cbind(x = c(x1, x2),
+               y = c(y1, y2),
+               circle1 = a,
+               circle2 = b)
+
+  if (nan.rm)
+    out[stats::complete.cases(out), ]
+  else
+    out
 }
 
 # Compute the area of a polygon
@@ -108,7 +153,7 @@ find_threeplus_areas <- function(x_int, y_int, radiuses, circles) {
   sum(arc_areas, find_polygon_area(x_int, y_int, n))
 }
 
-find_sets_containing_points <- function (points, x, y, r) {
+find_sets_containing_points <- function(points, x, y, r) {
   x_int <- points[1]
   y_int <- points[2]
   (x_int - x) ^ 2L + (y_int - y) ^ 2L <= r ^ 2L
