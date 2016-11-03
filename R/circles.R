@@ -26,23 +26,17 @@
 #' @export
 
 two_disk_overlap <- function(r1, r2, d = NULL, x1 = NULL, x2 = NULL, y1 = NULL,
-                             y2 = NULL, warnings = TRUE) {
+                             y2 = NULL) {
   assert_that(
     all(length(r1) == length(r2)),
     all(r1 > 0),
     all(r2 > 0),
     all(is.numeric(r1)),
-    all(is.numeric(r2)),
-    all(length(x1) == length(r1)),
-    all(length(x1) == length(y1)),
-    all(length(y2) == length(r2)),
-    all(length(d) == length(x2)),
-    length(warnings) == 1,
-    is.flag(warnings)
+    all(is.numeric(r2))
   )
 
   if(is.null(d)) {
-    assertthat::assert_that(
+    assert_that(
       all(!is.null(x1)),
       all(!is.null(x2)),
       all(!is.null(y1)),
@@ -50,12 +44,18 @@ two_disk_overlap <- function(r1, r2, d = NULL, x1 = NULL, x2 = NULL, y1 = NULL,
       all(is.numeric(x1)),
       all(is.numeric(x2)),
       all(is.numeric(y1)),
-      all(is.numeric(y2))
+      all(is.numeric(y2)),
+      all(length(x1) == length(r1)),
+      all(length(x2) == length(y1)),
+      all(length(y2) == length(r2))
     )
     d <- sqrt((x1 - x2) ^ 2 + (y1 - y2) ^ 2)
   } else {
-    assert_that(all(is.numeric(d)))
-    assert_that(all(d >= 0))
+    assert_that(
+      all(d >= 0),
+      all(is.numeric(d)),
+      all(length(d) == length(r1))
+    )
   }
 
   i1 <- d + pmin.int(r1, r2) < pmax.int(r1, r2)
@@ -92,19 +92,23 @@ two_disk_overlap <- function(r1, r2, d = NULL, x1 = NULL, x2 = NULL, y1 = NULL,
 #' int <- intersect_circles(x, y, r)
 #' int
 #'
-#' euclidr::draw_circles(x, y, r)
+#' draw_circles(x, y, r)
 #' points(int[, 1], int[, 2], pch = 16)
 #'
 #' @export
 #' @import assertthat
 intersect_circles <- function(x, y, r, nan.rm = FALSE) {
-  assert_that(all(is.numeric(x)))
-  assert_that(all(is.numeric(y)))
-  assert_that(all(is.numeric(r)))
-  assert_that(all(r >= 0))
-  assert_that(is.logical(nan.rm))
-  assert_that(length(x) == length(y) & length(y) == length(r))
-  assert_that(length(nan.rm) == 1)
+  assert_that(
+    is.numeric(x),
+    is.numeric(y),
+    is.numeric(r),
+    all(r >= 0),
+    is.flag(nan.rm),
+    length(x) == length(y),
+    length(x) == length(r),
+    length(y) == length(r),
+    length(nan.rm) == 1
+  )
 
   i <- utils::combn(length(x), 2, FUN = function(x) x)
   a <- i[1, ]
@@ -126,10 +130,7 @@ intersect_circles <- function(x, y, r, nan.rm = FALSE) {
   y1 <- y_d * l / d - x_d * h / d + y[b]
   y2 <- y_d * l / d + x_d * h / d + y[b]
 
-  out <- cbind(x = c(x1, x2),
-               y = c(y1, y2),
-               circle1 = a,
-               circle2 = b)
+  out <- cbind(x = c(x1, x2), y = c(y1, y2), circle1 = a, circle2 = b)
 
   if (nan.rm)
     out[stats::complete.cases(out), ]
