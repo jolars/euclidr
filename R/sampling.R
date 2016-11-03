@@ -25,7 +25,7 @@
 farthest_points <- function(data, n) {
   assert_that(
     is.numeric(data),
-    ncol(data) == 2 & ncol(data) == 3,
+    ncol(data) == 2 | ncol(data) == 3,
     nrow(data) >= n,
     is.count(n)
   )
