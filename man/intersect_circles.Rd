@@ -30,7 +30,7 @@ y <- runif(5)
 int <- intersect_circles(x, y, r)
 int
 
-euclidr::draw_circles(x, y, r)
+draw_circles(x, y, r)
 points(int[, 1], int[, 2], pch = 16)
 
 }

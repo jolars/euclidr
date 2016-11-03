@@ -7,16 +7,17 @@
 farthest_points(data, n)
 }
 \arguments{
-\item{data}{A matrix of points to choose n from}
+\item{data}{A matrix of points to choose n from, either in two or three
+dimensions.}
 
-\item{n}{The number of points to select}
+\item{n}{The number of points to select.}
 }
 \value{
-A vector of indices for the points in the subset
+A vector of indices for the points in the subset.
 }
 \description{
 Select a subset of points that maximize the smallest pairwise distance
-between the points
+between the points.
 }
 \details{
 This function begins with a random sample of n points and iterately puts them
