@@ -5,7 +5,7 @@
 \title{Overlap of two disks}
 \usage{
 two_disk_overlap(r1, r2, d = NULL, x1 = NULL, x2 = NULL, y1 = NULL,
-  y2 = NULL, warnings = TRUE)
+  y2 = NULL)
 }
 \arguments{
 \item{r1}{Radius of the first disk}
@@ -35,5 +35,10 @@ function provided that the coordinates for the center are provided.
 }
 \examples{
 
+r1 <- runif(4, 0.2, 0.5)
+r2 <- runif(4, 0.2, 0.5)
+d  <- runif(4)
+
+two_disk_overlap(r1, r2, d)
 }
 
