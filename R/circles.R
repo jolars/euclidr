@@ -11,8 +11,6 @@
 #' @param x2 x coordinate for the second disk's center
 #' @param y1 y coordinate for the first disk's center
 #' @param y2 y coordinate for the second disk's center
-#' @param warnings Returns warnings if disks are separated ore one is contained
-#'     within the otherr. Set to FALSE to disable.
 #' @return The area of the overlap between the two disks.
 #' @examples
 #'

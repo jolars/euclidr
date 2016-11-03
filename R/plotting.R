@@ -30,24 +30,26 @@
 #' draw_circles(x, y, r, polygon_args = list(border = "transparent",
 #'                                           col = c("goldenrod1",
 #'                                                   "steelblue1",
-#'                                                   "black"))
-#' )
+#'                                                   "black")))
 #' @export
 #' @import assertthat
 draw_circles <- function(x, y, r, polygon_args = list(), vertices = 500,
                          add = FALSE, asp = 1, ...) {
-  assert_that(all(is.numeric(x)))
-  assert_that(all(is.numeric(y)))
-  assert_that(all(is.numeric(r)))
-  assert_that(all(is.numeric(vertices)))
-  assert_that(length(vertices) == 1)
-  assert_that(is.logical(add))
-  assert_that(length(asp) == 1)
-  assert_that(is.numeric(asp))
-  assert_that(is.count(vertices))
-  assert_that(all(r >= 0))
-  assert_that(is.list(polygon_args))
-  assert_that(all(length(x) == length(y) & length(r) == length(x)))
+  assert_that(
+    is.numeric(x),
+    is.numeric(y),
+    is.numeric(r),
+    is.count(vertices),
+    length(vertices) == 1,
+    is.flag(add),
+    length(asp) == 1,
+    is.numeric(asp),
+    all(r >= 0),
+    is.list(polygon_args),
+    length(x) == length(y),
+    length(r) == length(x),
+    length(r) == length(y)
+  )
 
   x_coords <- double(0L)
   y_coords <- double(0L)

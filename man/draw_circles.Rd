@@ -49,8 +49,7 @@ r <- runif(3, 0.2, 0.6)
 draw_circles(x, y, r, polygon_args = list(border = "transparent",
                                           col = c("goldenrod1",
                                                   "steelblue1",
-                                                  "black"))
-)
+                                                  "black")))
 }
 \seealso{
 \code{\link[graphics]{polygon}}, \code{\link[graphics]{plot}}
