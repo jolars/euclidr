@@ -21,9 +21,6 @@ two_disk_overlap(r1, r2, d = NULL, x1 = NULL, x2 = NULL, y1 = NULL,
 \item{y1}{y coordinate for the first disk's center}
 
 \item{y2}{y coordinate for the second disk's center}
-
-\item{warnings}{Returns warnings if disks are separated ore one is contained
-within the otherr. Set to FALSE to disable.}
 }
 \value{
 The area of the overlap between the two disks.
