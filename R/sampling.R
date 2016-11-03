@@ -24,9 +24,7 @@
 farthest_points <- function(data, n) {
   assert_that(is.numeric(data))
   assert_that(nrow(data) >= n)
-  assert_that(is.numeric(n))
-  assert_that(n > 0)
-  assert_that(n %% 1 == 0) # check that n is an integer
+  assert_that(is.count(n))
 
   dmat <- as.matrix(stats::dist(data))
   r <- sample.int(nrow(dmat), n)
