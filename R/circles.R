@@ -16,26 +16,42 @@
 #' @return The area of the overlap between the two disks.
 #' @examples
 #'
+#' r1 <- runif(4, 0.2, 0.5)
+#' r2 <- runif(4, 0.2, 0.5)
+#' d  <- runif(4)
+#'
+#' two_disk_overlap(r1, r2, d)
 #' @import assertthat
+#'
 #' @export
 
 two_disk_overlap <- function(r1, r2, d = NULL, x1 = NULL, x2 = NULL, y1 = NULL,
                              y2 = NULL, warnings = TRUE) {
-  assert_that(all(is.numeric(r1)))
-  assert_that(all(is.numeric(r2)))
-  assert_that(all(r1 > 0))
-  assert_that(all(r2 > 0))
+  assert_that(
+    all(length(r1) == length(r2)),
+    all(r1 > 0),
+    all(r2 > 0),
+    all(is.numeric(r1)),
+    all(is.numeric(r2)),
+    all(length(x1) == length(r1)),
+    all(length(x1) == length(y1)),
+    all(length(y2) == length(r2)),
+    all(length(d) == length(x2)),
+    length(warnings) == 1,
+    is.flag(warnings)
+  )
 
   if(is.null(d)) {
-    assert_that(all(!is.null(x1)))
-    assert_that(all(!is.null(x2)))
-    assert_that(all(!is.null(y1)))
-    assert_that(all(!is.null(y2)))
-    assert_that(all(is.numeric(x1)))
-    assert_that(all(is.numeric(x2)))
-    assert_that(all(is.numeric(y1)))
-    assert_that(all(is.numeric(y2)))
-
+    assertthat::assert_that(
+      all(!is.null(x1)),
+      all(!is.null(x2)),
+      all(!is.null(y1)),
+      all(!is.null(y2)),
+      all(is.numeric(x1)),
+      all(is.numeric(x2)),
+      all(is.numeric(y1)),
+      all(is.numeric(y2))
+    )
     d <- sqrt((x1 - x2) ^ 2 + (y1 - y2) ^ 2)
   } else {
     assert_that(all(is.numeric(d)))
@@ -44,14 +60,18 @@ two_disk_overlap <- function(r1, r2, d = NULL, x1 = NULL, x2 = NULL, y1 = NULL,
 
   i1 <- d + pmin.int(r1, r2) < pmax.int(r1, r2)
   i2 <- d > r1 + r2
+  i3 <- !(i1 | i2)
   out <- double(length(d))
 
   out[i1] <- pi * pmin.int(r1[i1], r2[i1]) ^ 2
   out[i2] <- 0
-  out[!(i1 | i2)] <-
-    r1 ^ 2L * acos((d ^ 2L + r1 ^ 2L - r2 ^ 2L) / (2L * d * r1)) +
-      r2 ^ 2L * acos((d ^ 2L + r2 ^ 2L - r1 ^ 2L) / (2L * d * r2)) -
-      sqrt((r1 + r2 - d) * (d + r1 - r2) * (d - r1 + r2) * (d + r1 + r2)) / 2L
+  out[i3] <-
+    r1[i3] ^ 2L * acos((d[i3] ^ 2L + r1[i3] ^ 2L - r2[i3] ^ 2L) /
+                       (2L * d[i3] * r1[i3])) +
+    r2[i3] ^ 2L * acos((d[i3] ^ 2L + r2[i3] ^ 2L - r1[i3] ^ 2L) /
+                       (2L * d[i3] * r2[i3])) -
+    sqrt((r1[i3] + r2[i3] - d[i3]) * (d[i3] + r1[i3] - r2[i3]) *
+         (d[i3] - r1[i3] + r2[i3]) * (d[i3] + r1[i3] + r2[i3])) / 2L
 }
 
 #' Find intersection points of circles
@@ -83,6 +103,8 @@ intersect_circles <- function(x, y, r, nan.rm = FALSE) {
   assert_that(all(is.numeric(r)))
   assert_that(all(r >= 0))
   assert_that(is.logical(nan.rm))
+  assert_that(length(x) == length(y) & length(y) == length(r))
+  assert_that(length(nan.rm) == 1)
 
   i <- utils::combn(length(x), 2, FUN = function(x) x)
   a <- i[1, ]
