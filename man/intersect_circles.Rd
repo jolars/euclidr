@@ -7,13 +7,14 @@
 intersect_circles(x, y, r, nan.rm = FALSE)
 }
 \arguments{
-\item{x}{x coordinates of the circle centers}
+\item{x}{X coordinates of the circle centers}
 
-\item{y}{y coordinates of the circle centers}
+\item{y}{Y coordinates of the circle centers}
 
 \item{r}{Radiuses of the circles}
 
-\item{nan.rm}{Whether to drop}
+\item{nan.rm}{Set to \code{TRUE} to drop all combinations of circles with no
+intersections.}
 }
 \value{
 Return a matrix of x and y coordinates as well as the indices of the
