@@ -3,5 +3,6 @@
 export(draw_circles)
 export(farthest_points)
 export(intersect_circles)
+export(polygon_area)
 export(two_disk_overlap)
 import(assertthat)

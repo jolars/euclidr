@@ -77,7 +77,7 @@ two_disk_overlap <- function(r1, r2, d = NULL, x1 = NULL, x2 = NULL, y1 = NULL,
 #' Intersects any number of circles to find the points at which they intersect.
 #'
 #' @param x X coordinates of the circle centers
-#' @param y X coordinates of the circle centers
+#' @param y Y coordinates of the circle centers
 #' @param r Radiuses of the circles
 #' @param nan.rm Set to \code{TRUE} to drop all combinations of circles with no
 #'     intersections.
