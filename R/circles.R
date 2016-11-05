@@ -64,10 +64,10 @@ two_disk_overlap <- function(r1, r2, d = NULL, x1 = NULL, x2 = NULL, y1 = NULL,
   out[i1] <- pi * pmin.int(r1[i1], r2[i1]) ^ 2
   out[i2] <- 0
   out[i3] <-
-    r1[i3] ^ 2L * acos((d[i3] ^ 2L + r1[i3] ^ 2L - r2[i3] ^ 2L) /
-                       (2L * d[i3] * r1[i3])) +
-    r2[i3] ^ 2L * acos((d[i3] ^ 2L + r2[i3] ^ 2L - r1[i3] ^ 2L) /
-                       (2L * d[i3] * r2[i3])) -
+    r1[i3] ^ 2L *
+      acos((d[i3] ^ 2L + r1[i3] ^ 2L - r2[i3] ^ 2L) / (2L * d[i3] * r1[i3])) +
+    r2[i3] ^ 2L *
+      acos((d[i3] ^ 2L + r2[i3] ^ 2L - r1[i3] ^ 2L) / (2L * d[i3] * r2[i3])) -
     sqrt((r1[i3] + r2[i3] - d[i3]) * (d[i3] + r1[i3] - r2[i3]) *
          (d[i3] - r1[i3] + r2[i3]) * (d[i3] + r1[i3] + r2[i3])) / 2L
 }
@@ -76,10 +76,11 @@ two_disk_overlap <- function(r1, r2, d = NULL, x1 = NULL, x2 = NULL, y1 = NULL,
 #'
 #' Intersects any number of circles to find the points at which they intersect.
 #'
-#' @param x x coordinates of the circle centers
-#' @param y y coordinates of the circle centers
+#' @param x X coordinates of the circle centers
+#' @param y X coordinates of the circle centers
 #' @param r Radiuses of the circles
-#' @param nan.rm Whether to drop
+#' @param nan.rm Set to \code{TRUE} to drop all combinations of circles with no
+#'     intersections.
 #' @return Return a matrix of x and y coordinates as well as the indices of the
 #'     circles.
 #' @examples
@@ -104,8 +105,7 @@ intersect_circles <- function(x, y, r, nan.rm = FALSE) {
     is.flag(nan.rm),
     length(x) == length(y),
     length(x) == length(r),
-    length(y) == length(r),
-    length(nan.rm) == 1
+    length(y) == length(r)
   )
 
   i <- utils::combn(length(x), 2, FUN = function(x) x)
@@ -136,46 +136,35 @@ intersect_circles <- function(x, y, r, nan.rm = FALSE) {
     out
 }
 
-# Compute the area of a polygon
-find_polygon_area <- function(x, y, n) {
+#' Calculate the area of a polygon
+#'
+#' The function starts by finding the centroid of the points and then orders
+#' them from their angle to the center, whereafter it computes the area using
+#' the triangle method.
+#'
+#' \code{polygon_area} is vectorized and hence faster than implementations
+#' relying on for loops.
+#'
+#' @param x X coordinates for the vertices of the polygon
+#' @param y Y coordinates for the vertices of the polygon
+#' @return Area of the polygon
+#'
+#' @seealso \code{\link[geometry]{polyarea}}
+#' @export
+polygon_area <- function(x, y) {
+  assert_that(
+    is.numeric(x),
+    is.numeric(y),
+    are_equal(length(x), length(y))
+  )
+
+  n <- length(x)
+  ux <- sum(x) / n
+  uy <- sum(y) / n
+  ranks <- order(atan2(x - ux, y - ux), method = "radix")
+  x <- x[ranks]
+  y <- y[ranks]
   s <- seq_along(x)
-  k <- c(length(s), s[-length(s)])
+  k <- c(n, s[-n])
   sum((x[k] + x[s]) * (y[k] - y[s])) / 2L
-}
-
-# Compute the overlap of three or more circles
-find_threeplus_areas <- function(x_int, y_int, radiuses, circles) {
-  # Sort points clockwise from center
-  j <- n <- length(x_int)
-  ind <- order(atan2(x_int - sum(x_int) / n, y_int - sum(y_int) / n),
-               method = "radix")
-  x_int <- x_int[ind]
-  y_int <- y_int[ind]
-  circles <- circles[, ind]
-
-  arc_areas <- double(n)
-  for (i in 1:n) {
-    circle_now <- circles[, i][circles[, i] %in% circles[, j]]
-
-    d <- sqrt((x_int[j] - x_int[i]) ^ 2L + (y_int[j] - y_int[i]) ^ 2L)
-    r <- radiuses[circle_now]
-
-    # Find angle from center to segment
-    u <- 2L * asin(d / (2L * r))
-
-    # Find area of circle segment, in case we have to competing circles
-    A <- ((r ^ 2L) / 2L) * (u - sin(u))
-
-    # Pick the smallest area in case there are two competing areas
-    arc_areas[i] <- min(A)
-
-    j <- i
-  }
-  sum(arc_areas, find_polygon_area(x_int, y_int, n))
-}
-
-find_sets_containing_points <- function(points, x, y, r) {
-  x_int <- points[1]
-  y_int <- points[2]
-  (x_int - x) ^ 2L + (y_int - y) ^ 2L <= r ^ 2L
 }
