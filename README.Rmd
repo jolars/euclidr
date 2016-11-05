@@ -28,15 +28,17 @@ speed using vectorized operations.
 The development verison can be installed by running
 
 ```{r, eval = FALSE}
-# install.packages("devtools")
+#install.packages("devtools")
 devtools::install_github("jolars/euclidr")
 ```
 
-A release for CRAN is planned.
+A release for CRAN has been planned.
 
 ## Conduct
 
-Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md). By participating in this project you agree to abide by its terms.
+Please note that this project is released with a
+[Contributor Code of Conduct](CONDUCT.md). By participating in this project you
+agree to abide by its terms.
 
 ## License
 

@@ -13,11 +13,11 @@ Usage
 The development verison can be installed by running
 
 ``` r
-# install.packages("devtools")
+#install.packages("devtools")
 devtools::install_github("jolars/euclidr")
 ```
 
-A release for CRAN is planned.
+A release for CRAN has been planned.
 
 Conduct
 -------
