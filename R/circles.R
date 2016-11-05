@@ -11,14 +11,15 @@
 #' @param x2 x coordinate for the second disk's center
 #' @param y1 y coordinate for the first disk's center
 #' @param y2 y coordinate for the second disk's center
-#' @return The area of the overlap between the two disks.
-#' @examples
 #'
+#' @return The area of the overlap between the two disks.
+#'
+#' @examples
 #' r1 <- runif(4, 0.2, 0.5)
 #' r2 <- runif(4, 0.2, 0.5)
-#' d  <- runif(4)
-#'
+#' d  <- runif(4)#'
 #' two_disk_overlap(r1, r2, d)
+#'
 #' @import assertthat
 #'
 #' @export
@@ -81,8 +82,10 @@ two_disk_overlap <- function(r1, r2, d = NULL, x1 = NULL, x2 = NULL, y1 = NULL,
 #' @param r Radiuses of the circles
 #' @param nan.rm Set to \code{TRUE} to drop all combinations of circles with no
 #'     intersections.
+#'
 #' @return Return a matrix of x and y coordinates as well as the indices of the
 #'     circles.
+#'
 #' @examples
 #' r <- runif(5, 0.3, 0.8)
 #' x <- runif(5)
